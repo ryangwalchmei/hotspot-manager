@@ -1,7 +1,22 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
-enum OrderStatus { PENDING PAID CANCELLED REFUNDED }
-enum SessionStatus { READY ACTIVE EXPIRED REVOKED }
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+}
+enum SessionStatus {
+  READY
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
 model Plan {
  id String @id @default(cuid())
  name String
