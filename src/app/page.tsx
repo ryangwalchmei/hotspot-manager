@@ -1,0 +1,1 @@
+export default function Home(){return <main><h1>Conecta Wi-Fi</h1><p>Conecte-se à rede Wi-Fi para abrir automaticamente o portal de acesso.</p><p className="muted">É necessário receber um redirecionamento válido do ponto de acesso Intelbras. Esta página inicial não libera internet.</p></main>}

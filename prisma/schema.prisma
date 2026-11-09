@@ -1,0 +1,57 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+enum OrderStatus { PENDING PAID CANCELLED REFUNDED }
+enum SessionStatus { READY ACTIVE EXPIRED REVOKED }
+model Plan {
+ id String @id @default(cuid())
+ name String
+ priceCents Int
+ durationSeconds Int
+ downloadKbps Int?
+ uploadKbps Int?
+ enabled Boolean @default(true)
+ orders Order[]
+}
+model PortalAttempt {
+ id String @id @default(cuid())
+ clientMac String
+ apMac String
+ apIp String
+ userHash String
+ apTimestamp String
+ redirectUri String
+ continueUrl String?
+ createdAt DateTime @default(now())
+ expiresAt DateTime
+ orders Order[]
+ @@index([clientMac,createdAt])
+}
+model Order {
+ id String @id @default(cuid())
+ planId String
+ plan Plan @relation(fields:[planId],references:[id])
+ attemptId String
+ attempt PortalAttempt @relation(fields:[attemptId],references:[id])
+ amountCents Int
+ status OrderStatus @default(PENDING)
+ paymentId String? @unique
+ pixCode String?
+ pixQrBase64 String? @db.Text
+ createdAt DateTime @default(now())
+ paidAt DateTime?
+ session AccessSession?
+ @@index([status,createdAt])
+}
+model AccessSession {
+ id String @id @default(cuid())
+ orderId String @unique
+ order Order @relation(fields:[orderId],references:[id])
+ status SessionStatus @default(READY)
+ startsAt DateTime?
+ expiresAt DateTime?
+ createdAt DateTime @default(now())
+}
+model WebhookEvent {
+ id String @id
+ createdAt DateTime @default(now())
+}
